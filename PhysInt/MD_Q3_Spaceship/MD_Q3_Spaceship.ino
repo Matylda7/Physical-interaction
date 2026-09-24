@@ -29,7 +29,7 @@ void setup() {
   pinMode(5, OUTPUT);
 
   // declare the switch pin as an input
-  pinMode(2, INPUT);
+  pinMode(2, INPUT_PULLUP);
 }
 
 void loop() {
@@ -41,7 +41,7 @@ void loop() {
 
   // if the button is not pressed
   // turn on the green LED and off the red LEDs
-  if (switchstate == LOW) {
+  if (switchstate == HIGH) {
     digitalWrite(3, HIGH); // turn the green LED on
     digitalWrite(4, LOW);  // turn the red LED off
     digitalWrite(5, LOW);  // turn the red LED off
