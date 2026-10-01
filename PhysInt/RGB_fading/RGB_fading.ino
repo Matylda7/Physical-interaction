@@ -6,8 +6,8 @@ int red = 0;
 int blue = 0;
 int green = 0;
 
-int dimFactor = 20;
-int fadeAmount = 50;
+int dimFactor = 0;
+int fadeAmount = 20;
 
 void setup() {
   Serial.begin(9600);
@@ -23,7 +23,7 @@ void loop() {
 
   // put your main code here, to run repeatedly:
   int potentiometer = analogRead(A2);
-  int mappedPot = map(potentiometer, 0, 1023, 10, 255);
+  int mappedPot = map(potentiometer, 0, 1023, 5, 50);
   Serial.print("Pot:");
   Serial.println(mappedPot);
 
@@ -34,22 +34,22 @@ void loop() {
     fadeAmount = fadeAmount * -1;
   }
 
-  int baseRed = random(0, 256);
-  int baseBlue = random(0, 256);
-  int baseGreen = random(0, 256);
-  
-  red = baseRed - dimFactor;
-  blue = baseBlue - dimFactor;
-  green = baseGreen - dimFactor;
+  red += random(-15, 16);
+  blue += random(-15, 16);
+  green += random(-15, 16);
 
   red = constrain(red, 0, 255);
   green = constrain(green, 0, 255);
   blue = constrain(blue, 0, 255);
 
+  int finalRed   = constrain(red - dimFactor, 0, 255);
+  int finalGreen = constrain(green - dimFactor, 0, 255);
+  int finalBlue  = constrain(blue - dimFactor, 0, 255);
 
-  analogWrite(redPin, red);
-  analogWrite(bluePin, blue);
-  analogWrite(greenPin, green);
+
+  analogWrite(redPin, finalRed);
+  analogWrite(bluePin, finalBlue);
+  analogWrite(greenPin, finalGreen);
 
 
   Serial.print("Dim Factor: "); Serial.print(dimFactor);
@@ -58,5 +58,5 @@ void loop() {
   Serial.print(" | Blue: "); Serial.println(blue);
 
 
-  delay(mappedPot +150);
+  delay(mappedPot);
 }
