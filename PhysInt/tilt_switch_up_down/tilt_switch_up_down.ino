@@ -14,13 +14,15 @@ void setup() {
   pinMode(DOWN_PIN, INPUT_PULLUP);
   pinMode(CLICK_PIN, INPUT_PULLUP); // Initialize the click pin
 
-  // Initialize mouse control
+  // Initialize mouse control                                                                                                                                                                                                                                                                                                                                     
   Mouse.begin();
 }
 
 void loop() {
   int yDistance = 0;
-
+   Serial.print(digitalRead(DOWN_PIN));
+   Serial.print(", ");
+   Serial.println(digitalRead(UP_PIN));
   // Read tilt switches (LOW means the mercury is connecting the contacts)
   if (digitalRead(UP_PIN) == LOW)    yDistance = -speed;
   if (digitalRead(DOWN_PIN) == LOW)  yDistance = speed;
@@ -45,4 +47,5 @@ void loop() {
 
   // Small delay to prevent erratic movements
   delay(15); 
+  //Serial.println();
 }
