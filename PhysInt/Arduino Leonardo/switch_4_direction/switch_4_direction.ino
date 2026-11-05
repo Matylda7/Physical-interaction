@@ -5,20 +5,20 @@ const int UP_PIN = A0;
 const int DOWN_PIN = A1;
 const int LEFT_PIN = A2;
 const int RIGHT_PIN = A3;
-const int CLICK_PIN = 12; 
-const int ERASER_PIN = 11; 
+const int CLICK_PIN = 7; 
+const int ERASER_PIN = 4; 
 
 // LED Toggle Button
-const int LED_TOGGLE_PIN = 2;
+const int LED_TOGGLE_PIN = 8;
 
 // Rotary Encoder
-const int encoder0PinA = 8;
-const int encoder0PinB = 9;
+const int encoder0PinA = 13;
+const int encoder0PinB = 12;
 
 // RGB LED Pins
-const int redPin = 6;
-const int greenPin = 3;
-const int bluePin = 5;
+const int redPin = 11;
+const int greenPin = 9;
+const int bluePin = 10;
 
 const int speed = 3; 
 bool eraserActive = false;
@@ -102,7 +102,7 @@ void loop() {
    int yDistance = 0;
    int xDistance = 0;
    if (digitalRead(UP_PIN) == HIGH)   yDistance = -speed;
-   if (digitalRead(DOWN_PIN) == HIGH)   yDistance = speed;
+   if (digitalRead(DOWN_PIN) == LOW)   yDistance = speed;
    if (digitalRead(LEFT_PIN) == HIGH) xDistance = -speed;
    if (digitalRead(RIGHT_PIN) == HIGH)xDistance = speed;
    if (yDistance != 0) Mouse.move(0, yDistance, 0);
