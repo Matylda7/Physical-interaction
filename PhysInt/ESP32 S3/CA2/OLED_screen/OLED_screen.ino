@@ -10,75 +10,68 @@ bool isConnectedWifi = false;
 bool wasConnectedBlynk = false;
 bool isConnectedBlynk = false;
 
+
+unsigned long bothConnectedTime = 0;
+bool screenCleared = false;
+
+void updateDisplay() {
+  u8x8.clear();
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+
+  // if offline show "Connecting" 
+  if (!isConnectedWifi || !isConnectedBlynk) {
+    u8x8.setCursor(0, 0);
+    u8x8.print("Connecting...");
+  }
+
+  // Wi-Fi status on 2nd row
+  u8x8.setCursor(0, 2);
+  if (isConnectedWifi) {
+    u8x8.print("Wi-Fi connected");
+  } else {
+    u8x8.print("Wi-Fi...");
+  }
+
+  // Blynk status on 4th row
+  u8x8.setCursor(0, 4);
+  if (isConnectedBlynk) {
+    u8x8.print("Blynk connected");
+  } else {
+    u8x8.print("Blynk...");
+  }
+}
+
 void setup(void) {
   u8x8.begin();
   u8x8.setFlipMode(1);   // Enable (1) and disbale (0) 180 degree rotation of the display content
-  showConnectingWifi();
-  showConnectingBlynk();
+  updateDisplay();
 }
 
 void loop(void) { 
-  if (millis() > 3000) {
-    isConnectedWifi = true; 
-  }
-  if (millis() > 6000) {
-    isConnectedBlynk = true; 
-  }
-  //first time connecting
-  if (isConnectedWifi && !wasConnectedWifi) {
-    showConnectedWifi();
-    wasConnectedWifi = true;
+  if (millis() > 3000) isConnectedWifi = true;
+  if (millis() > 6000) isConnectedBlynk = true;
+
+ //checking if connection state changed
+  if (isConnectedWifi != wasConnectedWifi || isConnectedBlynk != wasConnectedBlynk) {
+    wasConnectedWifi = isConnectedWifi;
+    wasConnectedBlynk = isConnectedBlynk;
+    screenCleared = false;
+      
+    updateDisplay();
+
+    // If both are now connected, start the 10-second countdown
+    if (isConnectedWifi && isConnectedBlynk) {
+      bothConnectedTime = millis();
+    }
   }
 
-  if (isConnectedBlynk && !wasConnectedBlynk) {
-    showConnectedBlynk();
-    wasConnectedBlynk = true;
-  }
-  
-  //Check if JUST disconnected
-  else if (!isConnectedWifi && wasConnectedWifi) {
-    showConnectingWifi();
-    wasConnectedWifi = false; 
-  }
-
-  else if (!isConnectedBlynk && wasConnectedBlynk) {
-    showConnectingBlynk();
-    wasConnectedBlynk = false; 
+// after both have connected for 5sec, clear the screen
+  if (isConnectedWifi && isConnectedBlynk && !screenCleared) {
+    if (millis() - bothConnectedTime >= 5000) {
+      u8x8.clear();
+      screenCleared = true;
+    }
   }
  
 }
 
-void showConnectingWifi(){
-  u8x8.clear();
-  u8x8.setFont(u8x8_font_chroma48medium8_r);
-  u8x8.setCursor(0, 0);
-  u8x8.println("Connecting Wi-Fi...");
-}
-
-void showConnectingBlynk(){
-  u8x8.clear();
-  u8x8.setFont(u8x8_font_chroma48medium8_r);
-  u8x8.setCursor(0, 0);
-  u8x8.println("Connecting Blynk...");
-}
-
-
-void showConnectedWifi(){
-  u8x8.clear();
-  u8x8.setFont(u8x8_font_chroma48medium8_r);
-  u8x8.setCursor(0, 0);
-  u8x8.println("Wi-Fi connected");
-
-  delay(10000);
-  u8x8.clear();
-
-}
-void showConnectedBlynk(){
-  u8x8.clear();
-  u8x8.setFont(u8x8_font_chroma48medium8_r);
-  u8x8.setCursor(0, 0);
-  u8x8.println("Blynk connected");
-
-  delay(10000);
-  u8x8.clear();
-}
